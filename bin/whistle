@@ -1,0 +1,25 @@
+#!/usr/bin/env python
+
+import os
+import sys
+
+project = 'whistle'
+possible_topdir = os.path.normpath(os.path.join(os.path.abspath(sys.argv[0]),
+                                   os.pardir,
+                                   os.pardir))
+
+if os.path.exists(os.path.join(possible_topdir, project, '__init__.py')):
+    sys.path.insert(0, possible_topdir)
+
+from os import path
+from oslo.config import cfg
+
+import logging
+
+if __name__ == '__main__':
+    logging.basicConfig(level=logging.DEBUG)
+
+    from whistle import client
+    cfg.CONF(sys.argv[1:], project=project, version=client.__version__)
+    cfg.CONF.set_default('config_dir', path.join(possible_topdir, "etc"))
+    client.start()
